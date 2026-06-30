@@ -14,11 +14,9 @@ interface IProductList {
 }
 
 export class ProductList implements IProductList {
-  private catalogItems: IProduct[];
+  private catalogItems: IProduct[] = [];
   private currentItem: IProduct | null = null;
-  constructor(items: IProduct[]) {
-    this.catalogItems = items;
-  }
+  
   get items(): IProduct[] {
     return this.catalogItems;
   }

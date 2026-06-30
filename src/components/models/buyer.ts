@@ -13,7 +13,7 @@
 // Метод валидации должен давать возможность определить не только валидность каждого отдельного поля, но и предоставлять
 // информацию об ошибке, связанной с проверкой конкретного значения.
 
-import { IBuyer } from "../../types";
+import { IBuyer, TBuyerDataValidationObject } from "../../types";
 
 interface IBuyerClass {
   editBuyer({ payment, address, phone, email }: Partial<IBuyer>): void;
@@ -25,14 +25,18 @@ interface IBuyerClass {
 export class Buyer implements IBuyerClass {
   private EMPTY_DATA_VALIDATION_ERRORS = {
     payment: "Не выбран вид оплаты",
-    address: "Укажите addrA$$",
+    address: "Укажите адрес",
     phone: "Укажите телефон",
-    email: "Укажите емэйл",
+    email: "Укажите электронную почту",
   };
 
-  constructor(private buyerData: IBuyer) {
-    this.buyerData = buyerData;
+  private buyerData: IBuyer = {
+    payment: null,
+    address: '',
+    phone: '',
+    email: '',
   }
+
   editBuyer({ payment, address, phone, email }: Partial<IBuyer>) {
     if (payment) this.buyerData.payment = payment;
     if (address) this.buyerData.address = address;
@@ -44,10 +48,10 @@ export class Buyer implements IBuyerClass {
     return this.buyerData;
   }
   clearBuyerData() {
-    this.buyerData = { address: "", payment: "", phone: "", email: "" };
+    this.buyerData = { address: "", payment: null, phone: "", email: "" };
   }
   validateBuyerData() {
-    let validationObject: Partial<Record<keyof IBuyer, string>> = {};
+    let validationObject: TBuyerDataValidationObject = {};
 
     for (const [key, value] of Object.entries(this.buyerData) as [
       keyof IBuyer,
@@ -59,26 +63,3 @@ export class Buyer implements IBuyerClass {
     return validationObject;
   }
 }
-
-// constructor(
-//   private payment: IBuyer["payment"],
-//   private address: IBuyer["address"],
-//   private phone: IBuyer["phone"],
-//   private email: IBuyer["email"],
-// ) {
-//   this.payment = payment;
-//   this.address = address;
-//   this.phone = phone;
-//   this.email = email;
-// }
-
-// editBuyer({ payment, address, phone, email }: Partial<IBuyer>) {
-//   if (payment) this.payment = payment;
-//   if (address) this.address = address;
-//   if (phone) this.phone = phone;
-//   if (email) this.email = email;
-// }
-
-// getBuyerData() {
-//   return { payment: this.payment,  };
-// }

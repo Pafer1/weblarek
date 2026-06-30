@@ -1,9 +1,10 @@
 export type ApiPostMethods = "POST" | "PUT" | "DELETE";
 
-type TPayment = "online" | "type2" | "";
+type TPayment = "online" | "cash"
 type Nullish<T> = T | null;
 type TPrice = Nullish<number>;
 export type TFoundProduct = Nullish<IProduct>;
+export type TBuyerDataValidationObject = Partial<Record<keyof IBuyer, string>> 
 
 export interface IProduct {
   id: string;
@@ -15,7 +16,7 @@ export interface IProduct {
 }
 
 export interface IBuyer {
-  payment: TPayment;
+  payment: TPayment | null;
   email: string;
   phone: string;
   address: string;
@@ -32,16 +33,16 @@ export interface IApi {
 
 export interface IOrder extends IBuyer {
   total: number;
-  items: IProduct["id"];
+  items: IProduct["id"][];
 }
 
 // API TYPES
-export interface IProductListResponce {
+export interface IProductListResponse {
   total: number;
   items: IProduct[];
 }
 
-export interface IProductResponce {
+export interface IProductResponse {
   id: string;
   description: string;
   image: string;
@@ -50,7 +51,7 @@ export interface IProductResponce {
   price: TPrice;
 }
 
-export interface IOrderResponce {
+export interface IOrderResponse {
   id: string;
   total: number;
 }

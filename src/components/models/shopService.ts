@@ -1,27 +1,24 @@
 import {
+  IApi,
   IOrder,
-  IOrderResponce,
+  IOrderResponse,
   IProduct,
-  IProductListResponce,
-  IProductResponce,
+  IProductListResponse,
+  IProductResponse,
 } from "../../types";
-import { Api } from "../base/Api";
 
 export class ShopService {
-  private api: Api;
-  constructor(api: Api) {
+  private api: IApi;
+  constructor(api: IApi) {
     this.api = api;
   }
   async getProducts() {
-    const res = await this.api.get<IProductListResponce>("/product/");
-    return res;
+    return await this.api.get<IProductListResponse>("/product/");
   }
   async getProduct(id: IProduct["id"]) {
-    const res = await this.api.get<IProductResponce>(`/product/${id}`);
-    return res;
+    return await this.api.get<IProductResponse>(`/product/${id}`);
   }
   async postOrder(data: IOrder) {
-    const res = await this.api.post<IOrderResponce>("/order/", data);
-    return res;
+    return await this.api.post<IOrderResponse>("/order/", data);
   }
 }

@@ -15,17 +15,14 @@ interface ICart {
   addProduct(product: IProduct): void;
   deleteProduct(product: IProduct): void;
   clearCart(): void;
-  cartPrice(): number;
-  quantityProductsInCart(): number;
+  getCartPrice(): number;
+  getProductsCount(): number;
   isProductInCart(id: IProduct["id"]): boolean;
 }
 
 export class Cart implements ICart {
   private cartList: IProduct[] = [];
 
-  //   constructor(items: IProduct[]) {
-  //     this.catalogItems = items;
-  //   }
   get cart(): IProduct[] {
     return this.cartList;
   }
@@ -39,24 +36,14 @@ export class Cart implements ICart {
     this.cartList = [];
   }
 
-  cartPrice() {
-    const price: number = this.cartList.reduce(
-      (acc: number, el: IProduct): number => {
-        if (el.price) {
-          return acc + el.price;
-        } else {
-          return acc;
-        }
-      },
-      0,
-    );
-    return price;
+  getCartPrice() {
+    return this.cartList.reduce((acc, el) => acc + (el.price ?? 0), 0);
   }
 
-  quantityProductsInCart() {
+  getProductsCount() {
     return this.cartList.length;
   }
   isProductInCart(id: IProduct["id"]) {
-    return !!this.cartList.find((el) => el.id === id);
+    return this.cartList.some((el) => el.id === id);
   }
 }

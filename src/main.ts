@@ -9,14 +9,9 @@ import { apiProducts } from "./utils/data";
 
 const api = new Api(API_URL);
 const shopService = new ShopService(api);
-const productsModel = new ProductList([]);
+const productsModel = new ProductList();
 const cartModel = new Cart();
-const buyerModel = new Buyer({
-  payment: "online",
-  email: "test@test.ru",
-  phone: "+71234567890",
-  address: "Spb Vosstania 1",
-});
+const buyerModel = new Buyer();
 
 console.group("Тесты моделей");
 console.log("Начальные товары из productsModel", productsModel.items);
@@ -39,14 +34,21 @@ console.log(
   "Первый товар в корзине присутствует",
   cartModel.isProductInCart(apiProducts.items[0].id),
 );
-console.log("Общая стоимость корзины", cartModel.cartPrice());
-console.log("Количество товаров в корзине", cartModel.quantityProductsInCart());
+console.log("Общая стоимость корзины", cartModel.getCartPrice());
+console.log("Количество товаров в корзине", cartModel.getProductsCount());
 cartModel.deleteProduct(apiProducts.items[0]);
 console.log("Товары в корзине после удаления первого товара", cartModel.cart);
 cartModel.clearCart();
 console.log("Корзина после очистки", cartModel.cart);
 
 // Тестирование Buyer
+console.log("Попробуем получить данные покупателя до добавления", buyerModel.getBuyerData());
+console.log("Зададим начальные данные покупателя", buyerModel.editBuyer({
+  payment: "online",
+  email: "test@test.ru",
+  phone: "+71234567890",
+  address: "Spb Vosstania 1",
+}))
 console.log("Начальные данные покупателя", buyerModel.getBuyerData());
 console.log("Начальная валидация покупателя", buyerModel.validateBuyerData());
 buyerModel.editBuyer({ address: "Moscow, Red Square 1" });
@@ -72,9 +74,14 @@ console.log(
 console.groupEnd();
 
 // Запрос каталога с сервера и сохранение его в модели
-const serverProducts = await shopService.getProducts();
-console.log("Ответ сервера с товарами", serverProducts);
-productsModel.items = serverProducts.items;
+try {
+  const serverProducts = await shopService.getProducts();
+  console.log("Ответ сервера с товарами", serverProducts);
+  productsModel.items = serverProducts.items;
+} catch (err) {
+  console.error(err)
+}
+
 console.log(
   "Товары, сохранённые в productsModel из сервера",
   productsModel.items,
